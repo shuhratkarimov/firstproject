@@ -40,12 +40,18 @@ app.get('/students/:id', async (req, res) => {
 // Update
 app.put('/students/:id', async (req, res) => {
     const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!student) {
+        return res.status(404).json({ message: 'Student not found' });
+    }
     res.json(student);
 });
 
 // Delete
 app.delete('/students/:id', async (req, res) => {
-    await Student.findByIdAndDelete(req.params.id);
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) {
+        return res.status(404).json({ message: 'Student not found' });
+    }
     res.status(204).end();
 });
 
