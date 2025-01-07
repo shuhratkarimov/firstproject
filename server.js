@@ -30,8 +30,11 @@ app.get('/students', async (req, res) => {
 });
 
 app.get('/students/:id', async (req, res) => {
-    const students = await Student.findById(req.params);
-    res.json(students);
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+        return res.status(404).json({ message: 'Student not found' });
+    }
+    res.json(student);
 });
 
 // Update
