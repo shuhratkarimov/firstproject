@@ -1,59 +1,66 @@
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
-const connectDB = require('./config');
-const PORT = process.env.PORT || 4000
+const express = require("express");
+const mongoose = require("mongoose");
+require("dotenv").config();
+const connectDB = require("./config");
+const PORT = process.env.PORT || 4000;
 connectDB();
 
 const app = express();
 app.use(express.json());
 
 const studentSchema = new mongoose.Schema({
-    name: String,
-    age: Number,
-    grade: String,
+  name: String,
+  age: Number,
+  grade: String,
 });
 
-const Student = mongoose.model('students', studentSchema);
+const Student = mongoose.model("students", studentSchema);
 
 // Create
-app.post('/students', async (req, res) => {
-    const student = new Student(req.body);
-    await student.save();
-    res.status(201).json(student);
+app.post("/students", async (req, res) => {
+  const student = new Student(req.body);
+  await student.save();
+  res.status(201).json(student);
 });
 
 // Read
-app.get('/students', async (req, res) => {
-    const students = await Student.find();
-    res.json(students);
+app.get("/students", async (req, res) => {
+  const students = await Student.find();
+  res.json(students);
 });
 
-app.get('/students/:id', async (req, res) => {
-    const student = await Student.findById(req.params.id);
-    if (!student) {
-        return res.status(404).json({ message: 'Student not found' });
-    }
-    res.json(student);
+app.get("/students/:id", async (req, res) => {
+  const student = await Student.findById(req.params.id);
+  if (!student) {
+    return res.status(404).json({ message: "Student not found" });
+  }
+  res.json(student);
 });
 
 // Update
-app.put('/students/:id', async (req, res) => {
-    const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!student) {
-        return res.status(404).json({ message: 'Student not found' });
-    }
-    res.json(student);
+app.put("/students/:id", async (req, res) => {
+  const student = await Student.findById(req.params.id);
+  if (!student) {
+    return res.status(404).json({ message: "Student not found" });
+  }
+  await Student.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.json({
+    message: "updated successfully!",
+  });
 });
 
 // Delete
-app.delete('/students/:id', async (req, res) => {
-    const student = await Student.findByIdAndDelete(req.params.id);
-    if (!student) {
-        return res.status(404).json({ message: 'Student not found' });
-    }
-    res.status(204).end();
+app.delete("/students/:id", async (req, res) => {
+  const student = await Student.findById(req.params.id);
+  if (!student) {
+    return res.status(404).json({ message: "Student not found" });
+  }
+  await Student.findByIdAndDelete(req.params.id);
+  res.status(204).json({
+    message: "deleted successfully!",
+  });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
