@@ -29,6 +29,11 @@ app.get('/students', async (req, res) => {
     res.json(students);
 });
 
+app.get('/students/:id', async (req, res) => {
+    const students = await Student.findById(req.params);
+    res.json(students);
+});
+
 // Update
 app.put('/students/:id', async (req, res) => {
     const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
